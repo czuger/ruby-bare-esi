@@ -44,41 +44,56 @@ class RubyEsi
 
     parsed_result = nil
 
-    loop do
-      begin
-        @request = open( url )
+    begin
+      @request = open( url )
 
-        set_headers
+      set_headers
 
-        json_result = @request.read
-        parsed_result = JSON.parse( json_result )
+      json_result = @request.read
+      parsed_result = JSON.parse( json_result )
 
-        break
+    rescue JSON::ParserError => parse_error
+      warn 'Got parse error !!!'
+      raise parse_error
 
-      rescue JSON::ParserError => parse_error
-        warn 'Got parse error !!!'
-        next
+    rescue => e
+      error = EsiErrors::Base.dispatch( e )
+      error_print( error )
 
-      rescue => e
-        error = EsiErrors::Base.dispatch( e )
-        error_print( error )
-
-        if error.retry?
-          error.pause
-          next
-
-        else
-          raise error
-        end
-
-      end
+      raise error
     end
 
     parsed_result
   end
 
   def get_page_retry_on_error( page_number=nil )
-    get_page( page_number )
+    parsed_result = nil
+    retry_count = 0
+
+    loop do
+      begin
+        parsed_result = get_page( page_number )
+
+      rescue JSON::ParserError
+        next
+
+      rescue => e
+        if error.retry?
+
+          retry_count += 1
+          if retry_count >= 20
+            raise 'Retry count exceeded.'
+          end
+
+          error.pause
+          next
+        else
+          raise error
+        end
+      end
+    end
+
+    parsed_result
   end
 
   def get_all_pages( expect: nil )

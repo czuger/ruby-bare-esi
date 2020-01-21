@@ -12,13 +12,10 @@ class RubyEsiTest < Minitest::Test
     end
   end
 
-  def test_rest_url_mentatory
-    re = RubyEsi.new( 'characters/1/', verbose_output: true )
-
+  def test_get_page
+    re = RubyEsi.new( 'characters/1/', verbose_output: false )
     re.expects(:open).returns( @page )
-
-    assert re.get_page
+    assert_equal( {}, re.get_page )
   end
-
 
 end
