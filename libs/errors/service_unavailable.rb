@@ -1,4 +1,4 @@
-module Esi::Errors
+module EsiErrors
   class ServiceUnavailable < Base
 
     def pause

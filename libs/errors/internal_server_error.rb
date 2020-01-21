@@ -1,4 +1,4 @@
-module Esi::Errors
+module EsiErrors
   class InternalServerError < Base
 
     def pause

@@ -1,6 +1,8 @@
 require 'open-uri'
 require 'json'
 
+require_relative 'errors/base'
+
 # This class is the entry point for all method allowing data retrieval from the ESI API
 #
 # @author Cédric ZUGER - 2020
@@ -58,7 +60,7 @@ class RubyEsi
         next
 
       rescue => e
-        error = Esi::Errors::Base.dispatch( e )
+        error = EsiErrors::Base.dispatch( e )
         error_print( error )
 
         if error.retry?
@@ -165,6 +167,8 @@ class RubyEsi
   end
 
   def set_headers
+    p "request = #{@request}" if @verbose_output
+
     @pages_count = @request.meta['x-pages'].to_i
     @errors_limit_remain = @request.meta['x-esi-error-limit-remain']
     @errors_limit_reset = @request.meta['x-esi-error-limit-reset']
