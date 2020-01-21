@@ -1,13 +1,6 @@
 module EsiErrors
   class BadGateway < Base
-
-    def pause
-      sleep 10
-    end
-
-    def retry?
-      true
-    end
-
+    PAUSE_DURATION_VALUE=10
+    RETRY=true
   end
 end

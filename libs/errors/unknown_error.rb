@@ -1,13 +1,6 @@
 module EsiErrors
   class UnknownError < Base
-
-    def pause
-      sleep 60*3
-    end
-
-    def retry?
-      true
-    end
-
+    PAUSE_DURATION_VALUE=60*3
+    RETRY=true
   end
 end

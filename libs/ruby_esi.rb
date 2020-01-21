@@ -28,12 +28,12 @@ class RubyEsi
   # @param debug_mode [Boolean] turns on debugging if required. This also turn on verbose_mode.
   def initialize( rest_url = nil, params = {}, test_mode: false, debug_mode: false )
 
-    raise "rest_url can't be nil" unless rest_url
+    raise "RubyEsi.initialize : rest_url can't be nil" unless rest_url
 
     @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
     @test_mode = test_mode
 
-    puts 'RubyEsi - debug mode on' if @debug_mode
+    puts 'RubyEsi.initialize : debug mode on' if @debug_mode
 
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
@@ -45,7 +45,7 @@ class RubyEsi
     @params[:page] = 1
 
     loop do
-      puts "Requesting page #{@params[:page]}/#{@pages_count}" if @debug_mode
+      puts "RubyEsi.initialize : requesting page #{@params[:page]}/#{@pages_count}" if @debug_mode
 
       pages = get_page
 
@@ -53,19 +53,19 @@ class RubyEsi
         result += pages if pages.is_a? Array
         result << pages if pages.is_a? Hash
       else
-        puts "Page is empty" if @debug_mode
+        puts 'RubyEsi.get_all_pages : page is empty' if @debug_mode
       end
 
       if @pages_count == 0 || @pages_count == 1
-        puts 'No other pages to download - breaking out' if @debug_mode
+        puts 'RubyEsi.get_all_pages : no other pages to download - breaking out' if @debug_mode
         break
       else
-        puts "More pages to download : #{@pages_count}" if @debug_mode
+        puts "RubyEsi.get_all_pages : More pages to download : #{@pages_count}" if @debug_mode
         @params[:page] += 1
       end
 
       if @params[:page] && @params[:page] > @pages_count
-        puts 'No more pages to download - breaking out' if @debug_mode
+        puts 'RubyEsi.get_all_pages : No more pages to download - breaking out' if @debug_mode
         @params.delete(:page)
         break
       end
@@ -129,7 +129,7 @@ class RubyEsi
   end
 
   def set_headers
-    p "request = #{@request}" if @debug_mode
+    puts "RubyEsi.set_headers : request = #{@request}" if @debug_mode
 
     @pages_count = @request.meta['x-pages'].to_i
     @errors_limit_remain = @request.meta['x-esi-error-limit-remain']

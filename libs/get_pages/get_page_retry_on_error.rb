@@ -16,6 +16,8 @@ module RubyEsiGetPages
           break
 
         rescue EsiErrors::Base => error
+          puts "RubyEsiGetPages::GetPageRetryOnError.get_page_retry_on_error : retry = #{error.retry?}" if @debug_mode
+
           if error.retry?
 
             retry_count += 1
@@ -23,7 +25,7 @@ module RubyEsiGetPages
               raise 'Retry count exceeded.'
             end
 
-            error.pause() unless @test_mode
+            error.pause( test_mode: @test_mode )
             next
           else
             raise error

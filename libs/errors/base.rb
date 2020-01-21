@@ -7,6 +7,10 @@ module EsiErrors
     PAUSE_DURATION_VALUE=60
     RETRY=false
 
+    def self.initialize
+      @retry = self::RETRY
+    end
+
     def self.dispatch( exception, debug_mode: false )
 
       # return EsiErrors::SocketError.new if exception.message =~ /SocketError/
@@ -41,6 +45,10 @@ module EsiErrors
           raise 'Unhandled error'
       end
 
+      if debug_mode
+        puts "EsiErrors::Base about to return : #{error.inspect}"
+        puts "EsiErrors::Base : retry = #{error.retry?}"
+      end
       error
     end
 
@@ -48,13 +56,21 @@ module EsiErrors
       RETRY
     end
 
-    def pause
-      sleep( PAUSE_DURATION_VALUE )
+    def pause(  test_mode: false )
+      sleep( PAUSE_DURATION_VALUE ) unless test_mode
     end
 
   end
 
 end
 
+require_relative 'bad_gateway'
+require_relative 'error_limited'
+require_relative 'forbidden'
 require_relative 'gateway_timeout'
+require_relative 'internal_server_error'
 require_relative 'not_found'
+require_relative 'open_timeout'
+require_relative 'service_unavailable'
+require_relative 'socket_error'
+require_relative 'unknown_error'
