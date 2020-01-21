@@ -23,18 +23,15 @@ class RubyEsi
   #
   # @param rest_url [String] the path of the method to access ESI (the exact path you would send to the API).
   # @param params [Hash] the params if required.
-  # @param slient_mode [Boolean] turns on or off verbose_mode. verbose_mode is on by default. It is turned off only during tests
+  # @param test_mode [Boolean] turns on or off test_mode. test_mode is off by default. It is turned on only during
+  # tests to turn off some errors warnings and to reduce sleep time in case of automatic retry.
   # @param debug_mode [Boolean] turns on debugging if required. This also turn on verbose_mode.
-  #
-  # The difference between slient_mode and debug_mode is the following :
-  # debug_mode needs to be turned on only when you have an issue and want to see what's happening in key variables.
-  # slient_mode is off by default and need only turned on when you need a quiet output (like in tests)
-  def initialize( rest_url = nil, params = {}, silent_mode: false, debug_mode: false )
+  def initialize( rest_url = nil, params = {}, test_mode: false, debug_mode: false )
 
     raise "rest_url can't be nil" unless rest_url
 
     @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
-    @silent_mode = silent_mode || (ENV['EBS_SILENT_MODE'] == 'true') || @debug_mode
+    @test_mode = test_mode
 
     puts 'RubyEsi - debug mode on' if @debug_mode
 
@@ -124,7 +121,7 @@ class RubyEsi
   end
 
   def error_print( e )
-    unless @silent_mode
+    unless @test_mode
       warn "#{Time.now} - Requesting #{@rest_url}, #{@params.inspect} got '#{e}', limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
     end
 

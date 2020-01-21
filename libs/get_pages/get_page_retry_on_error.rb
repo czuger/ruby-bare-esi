@@ -1,6 +1,11 @@
 module RubyEsiGetPages
   module GetPageRetryOnError
 
+    # Get a single page. Doesn't check for remaining pages, in case of error retry according to Error class retry parameters.
+    #
+    # @param page_number [Int] the number of the pages you are requesting, if there are more pages you need to get (default the first).
+    #
+    # @return [Hash] a hash containing the data you are requested. For data content see API.
     def get_page_retry_on_error( page_number=nil )
       parsed_result = nil
       retry_count = 0
@@ -10,10 +15,7 @@ module RubyEsiGetPages
           parsed_result = get_page( page_number )
           break
 
-        rescue JSON::ParserError
-          next
-
-        rescue
+        rescue EsiErrors::Base => error
           if error.retry?
 
             retry_count += 1
@@ -21,7 +23,7 @@ module RubyEsiGetPages
               raise 'Retry count exceeded.'
             end
 
-            error.pause
+            error.pause() unless @test_mode
             next
           else
             raise error

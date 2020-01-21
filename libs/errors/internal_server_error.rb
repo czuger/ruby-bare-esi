@@ -1,13 +1,5 @@
 module EsiErrors
   class InternalServerError < Base
-
-    def pause
-      sleep 60
-    end
-
-    def retry?
-      true
-    end
-
+    RETRY=true
   end
 end

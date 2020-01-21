@@ -22,7 +22,7 @@ module RubyEsiGetPages
         parsed_result = JSON.parse( json_result )
 
       rescue JSON::ParserError => parse_error
-        warn 'Got parse error !!!' unless @silent_mode
+        warn 'Got parse error !!!' unless @test_mode
         raise parse_error
 
       rescue => e

@@ -3,6 +3,10 @@ require 'pp'
 module EsiErrors
 
   class EsiErrors::Base < RuntimeError
+
+    PAUSE_DURATION_VALUE=60
+    RETRY=false
+
     def self.dispatch( exception, debug_mode: false )
 
       # return EsiErrors::SocketError.new if exception.message =~ /SocketError/
@@ -41,7 +45,11 @@ module EsiErrors
     end
 
     def retry?
-      false
+      RETRY
+    end
+
+    def pause
+      sleep( PAUSE_DURATION_VALUE )
     end
 
   end
@@ -49,3 +57,4 @@ module EsiErrors
 end
 
 require_relative 'gateway_timeout'
+require_relative 'not_found'
