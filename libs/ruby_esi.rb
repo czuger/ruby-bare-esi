@@ -18,8 +18,9 @@ class RubyEsi
   # @param verbose_output [Boolean] turns on debugging if required.
   def initialize( rest_url = nil, params = {}, verbose_output: false )
 
+    raise "rest_url can't be nil" unless rest_url
+
     @verbose_output = verbose_output || (ENV['EBS_VERBOSE_OUTPUT'] == 'true')
-    p @verbose_output
 
     # p ENV['EBS_VERBOSE_OUTPUT']
     puts 'Esi::Download - verbosity on' if @verbose_output
