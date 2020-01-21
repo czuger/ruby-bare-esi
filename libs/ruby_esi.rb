@@ -17,15 +17,20 @@ class RubyEsi
   #
   # @param rest_url [String] the path of the method to access ESI (the exact path you would send to the API).
   # @param params [Hash] the params if required.
-  # @param verbose_output [Boolean] turns on debugging if required.
-  def initialize( rest_url = nil, params = {}, verbose_output: false )
+  # @param slient_mode [Boolean] turns on or off verbose_mode. verbose_mode is on by default. It is turned off only during tests
+  # @param debug_mode [Boolean] turns on debugging if required. This also turn on verbose_mode.
+  #
+  # The difference between slient_mode and debug_mode is the following :
+  # debug_mode needs to be turned on only when you have an issue and want to see what's happening in key variables.
+  # slient_mode is off by default and need only turned on when you need a quiet output (like in tests)
+  def initialize( rest_url = nil, params = {}, silent_mode: false, debug_mode: false )
 
     raise "rest_url can't be nil" unless rest_url
 
-    @verbose_output = verbose_output || (ENV['EBS_VERBOSE_OUTPUT'] == 'true')
+    @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
+    @silent_mode = silent_mode || (ENV['EBS_VERBOSE_OUTPUT'] == 'true') || @debug_mode
 
-    # p ENV['EBS_VERBOSE_OUTPUT']
-    puts 'Esi::Download - verbosity on' if @verbose_output
+    puts 'Esi::Download - verbosity on' if @debug_mode
 
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
@@ -34,13 +39,13 @@ class RubyEsi
 
   # Get a single page. Doesn't check for remaining pages, in case of error fail.
   #
-  # @param page_number [Int] the number of the page you are requesting, if there are more pages you need to get (default the first).
+  # @param page_number [Int] the number of the pages you are requesting, if there are more pages you need to get (default the first).
   #
   # @return [Hash] a hash containing the data you are requested. For data content see API.
   def get_page( page_number=nil )
     @params[:page] = page_number if page_number
     url = build_url
-    puts "Fetching : #{url}" if @verbose_output
+    puts "Fetching : #{url}" if @debug_mode
 
     parsed_result = nil
 
@@ -53,7 +58,7 @@ class RubyEsi
       parsed_result = JSON.parse( json_result )
 
     rescue JSON::ParserError => parse_error
-      warn 'Got parse error !!!'
+      warn 'Got parse error !!!' unless @silent_mode
       raise parse_error
 
     rescue => e
@@ -101,7 +106,7 @@ class RubyEsi
     @params[:page] = 1
 
     loop do
-      puts "Requesting page #{@params[:page]}/#{@pages_count}" if @verbose_output
+      puts "Requesting page #{@params[:page]}/#{@pages_count}" if @debug_mode
 
       pages = get_page
 
@@ -109,19 +114,19 @@ class RubyEsi
         result += pages if pages.is_a? Array
         result << pages if pages.is_a? Hash
       else
-        puts "Page is empty" if @verbose_output
+        puts "Page is empty" if @debug_mode
       end
 
       if @pages_count == 0 || @pages_count == 1
-        puts 'No other pages to download - breaking out' if @verbose_output
+        puts 'No other pages to download - breaking out' if @debug_mode
         break
       else
-        puts "More pages to download : #{@pages_count}" if @verbose_output
+        puts "More pages to download : #{@pages_count}" if @debug_mode
         @params[:page] += 1
       end
 
       if @params[:page] && @params[:page] > @pages_count
-        puts 'No more pages to download - breaking out' if @verbose_output
+        puts 'No more pages to download - breaking out' if @debug_mode
         @params.delete(:page)
         break
       end
@@ -166,7 +171,7 @@ class RubyEsi
     auth64 = Base64.strict_encode64( "#{client_id}:#{secret_key}" )
     auth_string = "Basic #{auth64}"
 
-    RestClient.log = 'stdout' if @verbose_output
+    RestClient.log = 'stdout' if @debug_mode
 
     c = RestClient.post 'https://login.eveonline.com/oauth/token',
                         { grant_type: :refresh_token, refresh_token: user.renew_token },
@@ -177,12 +182,15 @@ class RubyEsi
   end
 
   def error_print( e )
-    warn "#{Time.now} - Requesting #{@rest_url}, #{@params.inspect} got '#{e}', limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+    unless @silent_mode
+      warn "#{Time.now} - Requesting #{@rest_url}, #{@params.inspect} got '#{e}', limit_remains = #{@errors_limit_remain}, limit_reset = #{@errors_limit_reset}"
+    end
+
     STDOUT.flush
   end
 
   def set_headers
-    p "request = #{@request}" if @verbose_output
+    p "request = #{@request}" if @debug_mode
 
     @pages_count = @request.meta['x-pages'].to_i
     @errors_limit_remain = @request.meta['x-esi-error-limit-remain']
