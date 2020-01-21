@@ -1,0 +1,26 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    codeclimate-test-reporter (1.0.9)
+      simplecov (<= 0.13)
+    docile (1.1.5)
+    json (2.3.0)
+    minitest (5.14.0)
+    mocha (1.11.2)
+    simplecov (0.13.0)
+      docile (~> 1.1.0)
+      json (>= 1.8, < 3)
+      simplecov-html (~> 0.10.0)
+    simplecov-html (0.10.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  codeclimate-test-reporter (~> 1.0.0)
+  minitest
+  mocha
+  simplecov
+
+BUNDLED WITH
+   2.0.2
