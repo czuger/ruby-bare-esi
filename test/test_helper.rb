@@ -17,8 +17,8 @@ class EsiFakeRequest
 
   attr_reader :meta, :read
 
-  def initialize( read_data= {}, meta = DEFAULT_META )
-    @read = read_data.to_json
+  def initialize( read_data= '{}', meta = DEFAULT_META )
+    @read = read_data
     @meta = meta
   end
 

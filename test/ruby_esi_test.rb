@@ -18,4 +18,14 @@ class RubyEsiTest < Minitest::Test
     assert_equal( {}, re.get_page )
   end
 
+  def test_get_page_with_json_parse_error
+    re = RubyEsi.new( 'characters/1/', verbose_output: false )
+    re.expects(:open).returns( EsiFakeRequest.new( '{:}') )
+
+    assert_raises JSON::ParserError do
+      re.get_page
+    end
+  end
+
+
 end
