@@ -3,9 +3,11 @@ require 'pp'
 module EsiErrors
 
   class EsiErrors::Base < RuntimeError
-    def self.dispatch( exception )
+    def self.dispatch( exception, debug_mode: false )
 
       # return EsiErrors::SocketError.new if exception.message =~ /SocketError/
+
+      puts "EsiErrors::Base got exception : #{exception.inspect}" if debug_mode
 
       case exception.message
 
@@ -46,3 +48,4 @@ module EsiErrors
 
 end
 
+require_relative 'gateway_timeout'

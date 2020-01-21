@@ -20,12 +20,20 @@ class RubyEsiTest < Minitest::Test
 
   def test_get_page_with_json_parse_error
     re = RubyEsi.new( 'characters/1/', silent_mode: true )
-    re.expects(:open).returns( EsiFakeRequest.new( '{:}') )
+    re.expects(:open).returns( EsiFakeRequest.new( read_data: '{:}') )
 
     assert_raises JSON::ParserError do
       re.get_page
     end
   end
 
+  def test_get_page_with_internal_server_error
+    re = RubyEsi.new( 'characters/1/', silent_mode: true )
+    re.expects(:open).returns( EsiFakeRequest.new( error_message: '500 Internal Server Error' ) )
+
+    assert_raises EsiErrors::GatewayTimeout do
+      re.get_page
+    end
+  end
 
 end

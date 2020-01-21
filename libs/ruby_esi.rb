@@ -28,9 +28,9 @@ class RubyEsi
     raise "rest_url can't be nil" unless rest_url
 
     @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
-    @silent_mode = silent_mode || (ENV['EBS_VERBOSE_OUTPUT'] == 'true') || @debug_mode
+    @silent_mode = silent_mode || (ENV['EBS_SILENT_MODE'] == 'true') || @debug_mode
 
-    puts 'Esi::Download - verbosity on' if @debug_mode
+    puts 'RubyEsi - debug mode on' if @debug_mode
 
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
@@ -62,7 +62,7 @@ class RubyEsi
       raise parse_error
 
     rescue => e
-      error = EsiErrors::Base.dispatch( e )
+      error = EsiErrors::Base.dispatch( e, debug_mode: @debug_mode )
       error_print( error )
 
       raise error
