@@ -4,6 +4,7 @@ require 'json'
 require_relative 'errors/base'
 
 require_relative 'get_pages/get_page'
+require_relative 'get_pages/get_page_retry_on_error'
 
 # This class is the entry point for all method allowing data retrieval from the ESI API
 #
@@ -11,6 +12,7 @@ require_relative 'get_pages/get_page'
 class RubyEsi
 
   include RubyEsiGetPages::GetPage
+  include RubyEsiGetPages::GetPageRetryOnError
 
   # This is the default address of the ESI API
   ESI_BASE_URL='https://esi.evetech.net/latest/'
@@ -39,37 +41,6 @@ class RubyEsi
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
     @forbidden_count = 0
-  end
-
-  def get_page_retry_on_error( page_number=nil )
-    parsed_result = nil
-    retry_count = 0
-
-    loop do
-      begin
-        parsed_result = get_page( page_number )
-        break
-
-      rescue JSON::ParserError
-        next
-
-      rescue
-        if error.retry?
-
-          retry_count += 1
-          if retry_count >= 20
-            raise 'Retry count exceeded.'
-          end
-
-          error.pause
-          next
-        else
-          raise error
-        end
-      end
-    end
-
-    parsed_result
   end
 
   def get_all_pages( expect: nil )

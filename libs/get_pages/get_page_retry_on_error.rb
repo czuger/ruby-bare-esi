@@ -1,35 +1,32 @@
 module RubyEsiGetPages
-  module GetPage
+  module GetPageRetryOnError
 
-    # Get a single page. Doesn't check for remaining pages, in case of error fail.
-    #
-    # @param page_number [Int] the number of the pages you are requesting, if there are more pages you need to get (default the first).
-    #
-    # @return [Hash] a hash containing the data you are requested. For data content see API.
-    def get_page( page_number=nil )
-      @params[:page] = page_number if page_number
-      url = build_url
-      puts "Fetching : #{url}" if @debug_mode
-
+    def get_page_retry_on_error( page_number=nil )
       parsed_result = nil
+      retry_count = 0
 
-      begin
-        @request = open( url )
+      loop do
+        begin
+          parsed_result = get_page( page_number )
+          break
 
-        set_headers
+        rescue JSON::ParserError
+          next
 
-        json_result = @request.read
-        parsed_result = JSON.parse( json_result )
+        rescue
+          if error.retry?
 
-      rescue JSON::ParserError => parse_error
-        warn 'Got parse error !!!' unless @silent_mode
-        raise parse_error
+            retry_count += 1
+            if retry_count >= 20
+              raise 'Retry count exceeded.'
+            end
 
-      rescue => e
-        error = EsiErrors::Base.dispatch( e, debug_mode: @debug_mode )
-        error_print( error )
-
-        raise error
+            error.pause
+            next
+          else
+            raise error
+          end
+        end
       end
 
       parsed_result
