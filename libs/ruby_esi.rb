@@ -78,11 +78,12 @@ class RubyEsi
     loop do
       begin
         parsed_result = get_page( page_number )
+        break
 
       rescue JSON::ParserError
         next
 
-      rescue => e
+      rescue
         if error.retry?
 
           retry_count += 1

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class RubyEsiTest < Minitest::Test
+class GetPageTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new
