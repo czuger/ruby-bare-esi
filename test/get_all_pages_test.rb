@@ -1,6 +1,6 @@
-require 'test_helper'
+require_relative 'test_helper'
 
-class GetPageRetryOnErrorTest < Minitest::Test
+class GetAllPagesTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new

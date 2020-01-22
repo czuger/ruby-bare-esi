@@ -1,10 +1,10 @@
-require 'test_helper'
+require_relative 'test_helper'
 
 class GetPageTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new
-    @re = RubyEsi.new( 'characters/1/', silent_mode: true )
+    @re = RubyEsi.new( 'characters/1/', test_mode: true )
   end
 
   def test_rest_url_mandatory
