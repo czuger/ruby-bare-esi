@@ -7,10 +7,6 @@ module EsiErrors
     PAUSE_DURATION_VALUE=60
     RETRY=false
 
-    def self.initialize
-      @retry = self::RETRY
-    end
-
     def self.dispatch( exception, debug_mode: false )
 
       # return EsiErrors::SocketError.new if exception.message =~ /SocketError/
@@ -49,15 +45,16 @@ module EsiErrors
         puts "EsiErrors::Base about to return : #{error.inspect}"
         puts "EsiErrors::Base : retry = #{error.retry?}"
       end
+
       error
     end
 
     def retry?
-      RETRY
+      self.class::RETRY
     end
 
     def pause(  test_mode: false )
-      sleep( PAUSE_DURATION_VALUE ) unless test_mode
+      sleep( self.class::PAUSE_DURATION_VALUE ) unless test_mode
     end
 
   end
