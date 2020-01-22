@@ -5,6 +5,7 @@ require_relative 'errors/base'
 
 require_relative 'get_pages/get_page'
 require_relative 'get_pages/get_page_retry_on_error'
+require_relative 'get_pages/get_all_pages'
 
 # This class is the entry point for all method allowing data retrieval from the ESI API
 #
@@ -13,6 +14,7 @@ class RubyEsi
 
   include RubyEsiGetPages::GetPage
   include RubyEsiGetPages::GetPageRetryOnError
+  include RubyEsiGetPages::GetAllPages
 
   # This is the default address of the ESI API
   ESI_BASE_URL='https://esi.evetech.net/latest/'
@@ -38,40 +40,6 @@ class RubyEsi
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
     @forbidden_count = 0
-  end
-
-  def get_all_pages( expect: nil )
-    result = []
-    @params[:page] = 1
-
-    loop do
-      puts "RubyEsi.initialize : requesting page #{@params[:page]}/#{@pages_count}" if @debug_mode
-
-      pages = get_page
-
-      unless pages.empty?
-        result += pages if pages.is_a? Array
-        result << pages if pages.is_a? Hash
-      else
-        puts 'RubyEsi.get_all_pages : page is empty' if @debug_mode
-      end
-
-      if @pages_count == 0 || @pages_count == 1
-        puts 'RubyEsi.get_all_pages : no other pages to download - breaking out' if @debug_mode
-        break
-      else
-        puts "RubyEsi.get_all_pages : More pages to download : #{@pages_count}" if @debug_mode
-        @params[:page] += 1
-      end
-
-      if @params[:page] && @params[:page] > @pages_count
-        puts 'RubyEsi.get_all_pages : No more pages to download - breaking out' if @debug_mode
-        @params.delete(:page)
-        break
-      end
-    end
-
-    result
   end
 
   def set_auth_token( user=nil )

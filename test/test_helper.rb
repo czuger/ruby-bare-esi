@@ -17,9 +17,10 @@ class EsiFakeRequest
 
   attr_reader :meta
 
-  def initialize( read_data: '{}', meta: DEFAULT_META, error_message: nil )
+  def initialize( read_data: '{}', meta: {}, error_message: nil )
     @read_data = read_data
-    @meta = meta
+    @meta = DEFAULT_META.clone
+    @meta.merge!( meta )
     @error_message = error_message
   end
 
