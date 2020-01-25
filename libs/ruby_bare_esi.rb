@@ -10,18 +10,18 @@ require_relative 'get_pages/get_all_pages'
 # This class is the entry point for all method allowing data retrieval from the ESI API
 #
 # @author Cédric ZUGER - 2020
-class RubyEsi
+class RubyBareEsi
 
-  include RubyEsiGetPages::GetPage
-  include RubyEsiGetPages::GetPageRetryOnError
-  include RubyEsiGetPages::GetAllPages
+  include RubyBareEsiGetPages::GetPage
+  include RubyBareEsiGetPages::GetPageRetryOnError
+  include RubyBareEsiGetPages::GetAllPages
 
   # This is the default address of the ESI API
   ESI_BASE_URL='https://esi.evetech.net/latest/'
   # And the default server used for the requests
   ESI_DATA_SOURCE={ datasource: :tranquility }
 
-  # This initialize an RubyEsi download object.
+  # This initialize an RubyBareEsi download object.
   #
   # @param rest_url [String] the path of the method to access ESI (the exact path you would send to the API).
   # @param params [Hash] the params if required.
@@ -30,12 +30,12 @@ class RubyEsi
   # @param debug_mode [Boolean] turns on debugging if required. This also turn on verbose_mode.
   def initialize( rest_url = nil, params = {}, test_mode: false, debug_mode: false )
 
-    raise "RubyEsi.initialize : rest_url can't be nil" unless rest_url
+    raise "RubyBareEsi.initialize : rest_url can't be nil" unless rest_url
 
     @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
     @test_mode = test_mode
 
-    puts 'RubyEsi.initialize : debug mode on' if @debug_mode
+    puts 'RubyBareEsi.initialize : debug mode on' if @debug_mode
 
     @rest_url = rest_url
     @params = params.merge( ESI_DATA_SOURCE )
@@ -94,19 +94,6 @@ class RubyEsi
     end
 
     STDOUT.flush
-  end
-
-  def set_headers
-    puts "RubyEsi.set_headers : request = #{@request}" if @debug_mode
-
-    @pages_count = @request.meta['x-pages'].to_i
-    @errors_limit_remain = @request.meta['x-esi-error-limit-remain']
-    @errors_limit_reset = @request.meta['x-esi-error-limit-reset']
-  end
-
-  def build_url
-    url = ( @rest_url + '?' + @params.map{ |k, v| "#{k}=#{v}" }.join( '&' ) ).gsub( '//', '/' )
-    ESI_BASE_URL + url
   end
 
 end

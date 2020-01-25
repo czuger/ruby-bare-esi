@@ -1,4 +1,4 @@
-module RubyEsiGetPages
+module RubyBareEsiGetPages
   module GetPage
 
     # Get a single page. Doesn't check for remaining pages, in case of error fail.
@@ -8,7 +8,7 @@ module RubyEsiGetPages
     # @return [Hash] a hash containing the data you are requested. For data content see API.
     def get_page( page_number=nil )
       @params[:page] = page_number if page_number
-      url = build_url
+      url = self.build_url
       puts "Fetching : #{url}" if @debug_mode
 
       parsed_result = nil
@@ -33,6 +33,21 @@ module RubyEsiGetPages
       end
 
       parsed_result
+    end
+
+    protected
+
+    def set_headers
+      puts "RubyBareEsi.set_headers : request = #{@request}" if @debug_mode
+
+      @pages_count = @request.meta['x-pages'].to_i
+      @errors_limit_remain = @request.meta['x-esi-error-limit-remain']
+      @errors_limit_reset = @request.meta['x-esi-error-limit-reset']
+    end
+
+    def build_url
+      url = ( @rest_url + '?' + @params.map{ |k, v| "#{k}=#{v}" }.join( '&' ) ).gsub( '//', '/' )
+      self.class::ESI_BASE_URL + url
     end
 
   end

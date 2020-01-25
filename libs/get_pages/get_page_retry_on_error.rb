@@ -1,4 +1,4 @@
-module RubyEsiGetPages
+module RubyBareEsiGetPages
   module GetPageRetryOnError
 
     # Get a single page. Doesn't check for remaining pages, in case of error retry according to Error class retry parameters.
@@ -16,7 +16,7 @@ module RubyEsiGetPages
           break
 
         rescue EsiErrors::Base => error
-          puts "RubyEsiGetPages::GetPageRetryOnError.get_page_retry_on_error : retry = #{error.retry?}" if @debug_mode
+          puts "RubyBareEsiGetPages::GetPageRetryOnError.get_page_retry_on_error : retry = #{error.retry?}" if @debug_mode
 
           if error.retry?
 
