@@ -1,7 +1,7 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'libs/ruby_bare_esi/version'
+require 'ruby_bare_esi/version'
 
 Gem::Specification.new do |spec|
 
@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.summary       = 'Very low level ESI access library for ruby'
   spec.description   = 'This library is designed to provide a bare ESI access in ruby. No classes encapsulation,
     just a way to'
-  spec.homepage      = 'https://github.com/czuger/hazard'
+  spec.homepage      = 'https://github.com/czuger/ruby-bare-esi'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files`.split($/).reject{ |e| e =~ /bin/ }
