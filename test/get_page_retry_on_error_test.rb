@@ -4,7 +4,7 @@ class GetPageRetryOnErrorTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new
-    @re = RubyEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
+    @re = RubyBareEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
   end
 
   def test_get_page_retry_on_error_single_step

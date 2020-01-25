@@ -4,12 +4,12 @@ class GetPageTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new
-    @re = RubyEsi.new( 'characters/1/', test_mode: true )
+    @re = RubyBareEsi.new( 'characters/1/', test_mode: true )
   end
 
   def test_rest_url_mandatory
     assert_raises do
-      RubyEsi.new
+      RubyBareEsi.new
     end
   end
 

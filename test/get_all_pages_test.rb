@@ -4,7 +4,7 @@ class GetAllPagesTest < Minitest::Test
 
   def setup
     @page = EsiFakeRequest.new
-    @re = RubyEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
+    @re = RubyBareEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
   end
 
   def test_get_all_pages_with_hash_input
@@ -18,7 +18,7 @@ class GetAllPagesTest < Minitest::Test
   end
 
   def test_get_all_pages_with_hash_input_with_multiple_pages
-    @re = RubyEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
+    @re = RubyBareEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
 
     @re.expects(:open).times(2).returns(
       EsiFakeRequest.new( meta: { 'x-pages' => 2 }, read_data: '{ "foo": "bar" }') )

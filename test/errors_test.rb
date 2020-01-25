@@ -22,7 +22,7 @@ class ErrorsTest < Minitest::Test
 
       expect_times, error_message, error_klass, exception_message = test
 
-      re = RubyEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
+      re = RubyBareEsi.new( 'characters/1/', test_mode: true, debug_mode: false )
 
       re.expects(:open).times(expect_times).returns(
         EsiFakeRequest.new( error_message: error_message ) )
