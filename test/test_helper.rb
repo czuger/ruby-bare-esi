@@ -3,7 +3,7 @@ SimpleCov.start
 
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
 
-require_relative '../lib/ruby_bare_esi'
+require_relative '../lib/ruby-bare-esi'
 
 require 'minitest/autorun'
 require 'mocha/minitest'

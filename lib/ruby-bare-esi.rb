@@ -30,7 +30,8 @@ class RubyBareEsi
   # @param debug_mode [Boolean] turns on debugging if required. This also turn on verbose_mode.
   def initialize( rest_url = nil, params = {}, test_mode: false, debug_mode: false )
 
-    raise "RubyBareEsi.initialize : rest_url can't be nil" unless rest_url
+    # Of course it can, lots of processes defines the url later.
+    # raise "RubyBareEsi.initialize : rest_url can't be nil" unless rest_url
 
     @debug_mode = debug_mode || ENV['EBS_DEBUG_MODE'] == 'true'
     @test_mode = test_mode

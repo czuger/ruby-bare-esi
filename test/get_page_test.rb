@@ -7,11 +7,11 @@ class GetPageTest < Minitest::Test
     @re = RubyBareEsi.new( 'characters/1/', test_mode: true )
   end
 
-  def test_rest_url_mandatory
-    assert_raises do
-      RubyBareEsi.new
-    end
-  end
+  # def test_rest_url_mandatory
+  #   assert_raises do
+  #     RubyBareEsi.new
+  #   end
+  # end
 
   def test_get_page
     @re.expects(:open).returns( @page )
