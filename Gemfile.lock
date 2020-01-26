@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    ruby-bare-esi (0.0.2)
+    ruby-bare-esi (0.0.3)
 
 GEM
   remote: https://rubygems.org/
