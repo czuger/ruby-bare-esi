@@ -12,7 +12,7 @@ GEM
     json (2.3.0)
     minitest (5.14.0)
     mocha (1.11.2)
-    rake (10.5.0)
+    rake (13.0.1)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -27,7 +27,7 @@ DEPENDENCIES
   codeclimate-test-reporter (~> 1.0.0)
   minitest
   mocha
-  rake (~> 10.0)
+  rake (~> 13.0)
   ruby-bare-esi!
   simplecov
 
